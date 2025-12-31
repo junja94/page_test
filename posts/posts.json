@@ -1,5 +1,5 @@
 [
-  { "file": "vision-grasping.md", "date": "2024-07-05" },
-  { "file": "trajectory-safety.md", "date": "2024-06-28" },
-  { "file": "data-pipeline.md", "date": "2024-06-14" }
+  { "file": "visuomotor.md", "appearAtHome": true },
+  { "file": "trajectory-safety.md", "appearAtHome": true },
+  { "file": "safe_lowlevel.md", "appearAtHome": true }
 ]

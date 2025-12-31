@@ -13,6 +13,16 @@ function parsePost(markdown) {
   const lines = markdown.split('\n');
   const meta = {};
   let i = 0;
+  while (i < lines.length && !lines[i].trim()) {
+    i += 1;
+  }
+  if (i < lines.length && lines[i].trim().startsWith('#')) {
+    meta.title = lines[i].replace(/^#+\s*/, '').trim();
+    i += 1;
+  }
+  while (i < lines.length && !lines[i].trim()) {
+    i += 1;
+  }
   for (; i < lines.length; i += 1) {
     const line = lines[i].trim();
     if (!line) {
@@ -33,7 +43,7 @@ function buildPostData(meta = {}, file = '', body = '') {
   const description = meta.description || '';
   const authors = meta.authors || meta.author || 'Neuromeka AI Lab';
   const date = meta.date || '';
-  const thumbnailPath = meta.thumbnailpath || meta.image || '';
+  const thumbnailPath = meta.thumbnailpath || meta.thumbnail || meta.image || meta.video || meta.videopath || '';
   const thumbnailType = meta.thumbnailtype || '';
   const thumbnailPoster = meta.thumbnailposter || '';
   return {
@@ -101,18 +111,24 @@ function renderPostCard(post, file) {
 fetch(postsIndexUrl)
   .then((res) => res.json())
   .then((index) => {
-    const sorted = index.sort((a, b) => new Date(b.date) - new Date(a.date));
-    sorted.forEach((item) => {
+    const entries = Array.isArray(index) ? index : [];
+    return Promise.all(entries.map((item) => {
       const filePath = `posts/${item.file}`;
-      fetch(filePath)
+      return fetch(filePath)
         .then((res) => res.text())
         .then((md) => parsePost(getLocalizedMarkdown(md)))
-        .then(({ meta, body }) => renderPostCard(buildPostData(meta, filePath, body), filePath))
-        .catch(() => {
-          const fallback = buildPostData({ title: item.file, description: 'Could not load post.' }, filePath, '');
-          renderPostCard(fallback, filePath);
-        });
-    });
+        .then(({ meta, body }) => ({ post: buildPostData(meta, filePath, body), filePath }))
+        .catch(() => ({
+          post: buildPostData({ title: item.file, description: 'Could not load post.' }, filePath, ''),
+          filePath,
+        }));
+    }));
+  })
+  .then((items) => {
+    if (postList) postList.innerHTML = '';
+    items
+      .sort((a, b) => new Date(b.post.date || 0) - new Date(a.post.date || 0))
+      .forEach(({ post, filePath }) => renderPostCard(post, filePath));
   })
   .catch(() => {
     if (postList) {

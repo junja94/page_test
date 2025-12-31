@@ -100,10 +100,30 @@ function isVideoSource(path = '') {
   return videoExtensions.some((ext) => normalized.endsWith(ext));
 }
 
+function resolveAppearAtHome(value) {
+  if (value === undefined || value === null) return true;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['false', '0', 'no', 'off'].includes(normalized)) return false;
+    if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
+  }
+  return Boolean(value);
+}
+
 function parsePost(markdown) {
   const lines = markdown.split('\n');
   const meta = {};
   let i = 0;
+  while (i < lines.length && !lines[i].trim()) {
+    i += 1;
+  }
+  if (i < lines.length && lines[i].trim().startsWith('#')) {
+    meta.title = lines[i].replace(/^#+\s*/, '').trim();
+    i += 1;
+  }
+  while (i < lines.length && !lines[i].trim()) {
+    i += 1;
+  }
   for (; i < lines.length; i += 1) {
     const line = lines[i].trim();
     if (!line) {
@@ -124,7 +144,7 @@ function buildPostData(meta = {}, link = '') {
   const description = meta.description || '';
   const authors = meta.authors || meta.author || 'Neuromeka AI Lab';
   const date = meta.date || '';
-  const thumbnailPath = meta.thumbnailpath || meta.image || '';
+  const thumbnailPath = meta.thumbnailpath || meta.thumbnail || meta.image || meta.video || meta.videopath || '';
   const thumbnailType = meta.thumbnailtype || '';
   const thumbnailPoster = meta.thumbnailposter || '';
   return {
@@ -148,10 +168,7 @@ function renderTechCards() {
   }
   const count = cardsPerView();
   const slice = techItems.slice(techIndex, techIndex + count);
-  while (slice.length < count) {
-    slice.push(...techItems);
-  }
-  slice.slice(0, count).forEach((item) => {
+  slice.forEach((item) => {
     const card = document.createElement('article');
     card.className = 'tech-card';
     const targetUrl = `post.html?file=${item.link}`;
@@ -243,14 +260,15 @@ function loadTechItemsFromPosts() {
   return fetch(postsIndexUrl)
     .then((res) => res.json())
     .then((index) => {
-      const sorted = index.sort((a, b) => new Date(b.date) - new Date(a.date));
-      return Promise.all(sorted.map((item) => {
+      const entries = Array.isArray(index) ? index : [];
+      return Promise.all(entries.map((item) => {
         const filePath = `posts/${item.file}`;
+        const appearAtHome = resolveAppearAtHome(item.appearAtHome);
         return fetch(filePath)
           .then((res) => res.text())
           .then((md) => {
             const { meta } = parsePost(getLocalizedMarkdown(md));
-            return buildPostData(meta, filePath);
+            return { ...buildPostData(meta, filePath), appearAtHome };
           })
           .catch(() => ({
             title: item.file,
@@ -261,11 +279,14 @@ function loadTechItemsFromPosts() {
             thumbnailType: 'image',
             thumbnailPoster: '',
             link: filePath,
+            appearAtHome,
           }));
       }));
     })
     .then((items) => {
-      techItems = items;
+      const filtered = items.filter((item) => item.appearAtHome !== false);
+      filtered.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      techItems = filtered;
       renderTechCards();
     })
     .catch(() => {});

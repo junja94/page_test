@@ -13,6 +13,16 @@ function parsePost(markdown) {
   const lines = markdown.split('\n');
   const meta = {};
   let i = 0;
+  while (i < lines.length && !lines[i].trim()) {
+    i += 1;
+  }
+  if (i < lines.length && lines[i].trim().startsWith('#')) {
+    meta.title = lines[i].replace(/^#+\s*/, '').trim();
+    i += 1;
+  }
+  while (i < lines.length && !lines[i].trim()) {
+    i += 1;
+  }
   for (; i < lines.length; i += 1) {
     const line = lines[i].trim();
     if (!line) {
@@ -32,40 +42,67 @@ function renderPost(post) {
   if (!postContainer) return;
   postContainer.innerHTML = '';
   const header = document.createElement('div');
-  header.className = 'section-header';
+  header.className = 'post-header';
+  const headerText = document.createElement('div');
+  headerText.className = 'post-header-text';
   const title = document.createElement('h1');
   title.textContent = post.title || '';
   const meta = document.createElement('div');
   meta.className = 'post-meta';
-  meta.textContent = `${post.authors}${post.date ? ' · ' + post.date : ''}`;
-  header.append(title, meta);
+  const metaParts = [];
+  if (post.authors) metaParts.push(post.authors);
+  if (post.date) metaParts.push(post.date);
+  meta.textContent = metaParts.join(' · ');
+  headerText.append(title, meta);
+
+  if (post.description) {
+    const desc = document.createElement('p');
+    desc.className = 'post-header-description';
+    desc.textContent = post.description;
+    headerText.appendChild(desc);
+  }
+
+  const pub = document.createElement('div');
+  pub.className = 'post-publication';
+  if (post.publication) {
+    const link = document.createElement('a');
+    link.href = post.publication;
+    link.textContent = 'Publication';
+    link.target = '_blank';
+    link.rel = 'noopener';
+    pub.appendChild(link);
+  } else {
+    const label = document.createElement('span');
+    label.className = 'is-unavailable';
+    label.textContent = 'Publication (unavailable)';
+    pub.appendChild(label);
+  }
+  headerText.appendChild(pub);
+  header.appendChild(headerText);
 
   const mediaPath = post.thumbnailPath;
-  const mediaType = post.thumbnailType || (isVideoSource(mediaPath) ? 'video' : 'image');
   if (mediaPath) {
+    const mediaWrap = document.createElement('div');
+    mediaWrap.className = 'post-header-media';
+    const mediaType = post.thumbnailType || (isVideoSource(mediaPath) ? 'video' : 'image');
+    const media = mediaType === 'video' ? document.createElement('video') : document.createElement('img');
     if (mediaType === 'video') {
-      const heroVideo = document.createElement('video');
-      heroVideo.src = mediaPath;
-      heroVideo.muted = true;
-      heroVideo.loop = true;
-      heroVideo.playsInline = true;
-      heroVideo.autoplay = true;
-      heroVideo.preload = 'metadata';
-      if (post.thumbnailPoster) heroVideo.poster = post.thumbnailPoster;
-      heroVideo.style.borderRadius = '16px';
-      heroVideo.style.margin = '1rem 0';
-      postContainer.append(header, heroVideo);
+      media.muted = true;
+      media.loop = true;
+      media.playsInline = true;
+      media.autoplay = true;
+      media.preload = 'metadata';
+      if (post.thumbnailPoster) media.poster = post.thumbnailPoster;
+      media.src = mediaPath;
+      media.setAttribute('aria-label', post.title);
     } else {
-      const heroImg = document.createElement('img');
-      heroImg.src = mediaPath;
-      heroImg.alt = post.title;
-      heroImg.style.borderRadius = '16px';
-      heroImg.style.margin = '1rem 0';
-      postContainer.append(header, heroImg);
+      media.src = mediaPath;
+      media.alt = post.title;
     }
-  } else {
-    postContainer.append(header);
+    mediaWrap.appendChild(media);
+    header.appendChild(mediaWrap);
   }
+  postContainer.appendChild(header);
 
   const body = document.createElement('div');
   body.className = 'markdown';
@@ -78,13 +115,16 @@ if (file) {
     .then((res) => res.text())
     .then((md) => parsePost(getLocalizedMarkdown(md)))
     .then(({ meta, body }) => {
-      const thumbnailPath = meta.thumbnailpath || meta.image || '';
+      const thumbnailPath = meta.thumbnailpath || meta.thumbnail || meta.image || meta.video || meta.videopath || '';
       const thumbnailType = meta.thumbnailtype || '';
       const thumbnailPoster = meta.thumbnailposter || '';
+      const publication = meta.publication || meta.publicationlink || meta.link || '';
       renderPost({
         title: meta.title || file,
         authors: meta.authors || meta.author || 'Neuromeka AI Lab',
         date: meta.date || '',
+        description: meta.description || '',
+        publication,
         thumbnailPath,
         thumbnailType,
         thumbnailPoster,
