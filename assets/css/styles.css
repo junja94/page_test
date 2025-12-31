@@ -297,7 +297,7 @@ main {
 }
 
 .carousel-dots {
-  display: flex;
+  display: none;
   gap: 0.5rem;
   justify-content: center;
   margin-top: 1rem;
