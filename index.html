@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neuromeka AI Lab</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="assets/images/logo.png" alt="Neuromeka AI Logo" />
+      <span>Neuromeka AI Lab</span>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <a href="team.html">Team</a>
+      <a href="sources.html">Open Sources</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="hero-slider" id="heroSlider">
+        <video id="heroVideo" playsinline muted autoplay loop></video>
+        <button class="slider-control prev" aria-label="Previous video" id="heroPrev">&#10094;</button>
+        <button class="slider-control next" aria-label="Next video" id="heroNext">&#10095;</button>
+        <div class="hero-overlay">
+          <h1>AI-enhanced Cobots for Industry</h1>
+          <div id="heroCopy" class="markdown"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="core-tech">
+      <div class="section-header">
+        <h2>Core technologies</h2>
+        <p>Media-driven highlights linked to our latest engineering notes.</p>
+      </div>
+      <div class="carousel" id="techCarousel">
+        <div class="carousel-track" id="techTrack"></div>
+        <button class="slider-control prev" aria-label="Previous" id="techPrev">&#10094;</button>
+        <button class="slider-control next" aria-label="Next" id="techNext">&#10095;</button>
+      </div>
+      <div class="carousel-dots" id="techDots"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Neuromeka AI Lab · Practical AI for industrial automation</span>
+    <span>Update text easily via Markdown files in the repo.</span>
+  </footer>
+
+  <script src="assets/script.js"></script>
+</body>
+</html>
