@@ -215,6 +215,10 @@ main {
   padding: 3rem 2rem;
 }
 
+.about-section {
+  border-top: 1px solid #e5e9f2;
+}
+
 .section-header {
   max-width: var(--layout-content-max-width);
   margin: 0 auto 1.5rem auto;
@@ -229,6 +233,26 @@ main {
 .section-header p {
   margin: 0;
   color: var(--color-muted);
+}
+
+.about-section .about-content {
+  max-width: var(--layout-content-max-width);
+  margin: 0 auto;
+}
+
+.about-section p {
+  margin: 0 0 1rem 0;
+  color: var(--color-text);
+}
+
+.about-section p {
+  font-size: 1.5rem;
+  line-height: 1.9;
+}
+
+.about-section .about-highlight {
+  color: var(--color-accent);
+  font-weight: 700;
 }
 
 .carousel {
