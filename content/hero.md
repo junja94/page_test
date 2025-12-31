@@ -1,1 +1,4 @@
-At Neuromeka AI Lab, we tackle industry-specific challenges by focusing on practical, field-ready AI solutions. By integrating advanced data-driven methodologies into industrial machines, we aim to deliver real-world impact and drive meaningful transformation in automation.
+MaxWidth: 1300px
+
+At **Neuromeka AI Lab**, we tackle industry-specific challenges by developing practical, field-ready AI solutions.
+<!-- We integrate data-driven intelligence into industrial machines to create real-world impact in industrial automation. -->
