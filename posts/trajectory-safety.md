@@ -1,12 +1,12 @@
-# Safety-first motion planning
-Authors: Daniel Park
+# Fast, tool-aware collision avoidance for cobots
+Authors: Joonho Lee
 Date: 2025-06-28
-Image: media/thumbnails/left_to_right.gif 
-Description: SDF + human pose fusion for dynamic stop zones without sacrificing cycle time.
-Publication: https://example.com/paper
+Image: media/thumbnails/left_to_right.gif
+Description: Point-cloud collision avoidance using constrained RL for safe, responsive cobot motion.
+Publication: https://arxiv.org/abs/2508.20457
 
-We released an updated trajectory planner that fuses signed distance fields with near-real-time human pose estimation. The planner now reasons about stop zones dynamically while preserving cycle time.
+We develop fast, efficient collision avoidance for collaborative robots using point cloud data from sensors such as Intel RealSense and 3D LiDAR. Our approach applies constrained reinforcement learning (CRL) to enforce safety constraints while remaining tool-aware, enabling responsive motion in dynamic, shared workspaces without sacrificing cycle time.
 
-- Added velocity-adaptive clearance based on predicted human paths.
-- Tuned jerk limits to avoid payload sway while braking.
-- Integrated with our safety PLC via OPC-UA for synchronized stops.
+- Uses point cloud inputs for geometry-aware obstacle reasoning.
+- Enforces safety via CRL constraints while optimizing motion efficiency.
+- Maintains tool awareness for realistic, deployment-ready avoidance behavior.

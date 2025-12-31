@@ -1,4 +1,5 @@
 const headerHost = document.getElementById('siteHeader');
+const footerHost = document.getElementById('siteFooter');
 
 function setActiveNav(container) {
   const links = container.querySelectorAll('nav a');
@@ -11,12 +12,16 @@ function setActiveNav(container) {
   });
 }
 
-if (headerHost) {
-  fetch('assets/header.html')
+function loadPartial(host, path, onLoad) {
+  if (!host) return;
+  fetch(path)
     .then((res) => res.text())
     .then((markup) => {
-      headerHost.innerHTML = markup;
-      setActiveNav(headerHost);
+      host.innerHTML = markup;
+      if (onLoad) onLoad(host);
     })
     .catch(() => {});
 }
+
+loadPartial(headerHost, 'assets/header.html', setActiveNav);
+loadPartial(footerHost, 'assets/footer.html');

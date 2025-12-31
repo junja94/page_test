@@ -537,6 +537,16 @@ main {
   color: var(--color-muted);
 }
 
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.footer-content strong {
+  color: var(--color-text);
+}
+
 @media (max-width: 1024px) {
   .carousel-track {
     grid-template-columns: repeat(2, 1fr);
