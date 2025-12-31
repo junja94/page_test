@@ -1,0 +1,20 @@
+[
+  {
+    "name": "neuromeka-ai/cobot-vision",
+    "url": "https://github.com/neuromeka-ai/cobot-vision",
+    "description": "Calibration and visual servoing utilities for collaborative robots.",
+    "topics": ["vision", "calibration", "robotics"]
+  },
+  {
+    "name": "neuromeka-ai/motion-planner",
+    "url": "https://github.com/neuromeka-ai/motion-planner",
+    "description": "Safety-aware motion planning reference with OPC-UA adapters.",
+    "topics": ["planning", "safety", "opc-ua"]
+  },
+  {
+    "name": "neuromeka-ai/edge-pipeline",
+    "url": "https://github.com/neuromeka-ai/edge-pipeline",
+    "description": "Edge-to-cloud telemetry and feature store templates for industrial AI.",
+    "topics": ["data", "pipelines", "monitoring"]
+  }
+]
